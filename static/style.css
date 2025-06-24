@@ -1,0 +1,285 @@
+/* General body styling settings */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Specifies font family */
+    margin: 0; /* Resets page margins */
+    overflow: hidden; /* Prevents scrollbars on the page */
+    background-color: #f0f0f0; /* Light gray background color */
+    display: flex; /* For aligning content with Flexbox */
+    justify-content: center; /* Centers content horizontally */
+    align-items: center; /* Centers content vertically */
+    min-height: 100vh; /* Sets minimum height to full viewport height */
+}
+
+/* Main container for the canvas and toolbar, relative positioning for child elements */
+.container {
+    position: relative; /* Reference point for absolutely positioned children */
+    width: 100%; /* Width of the container */
+    height: 100vh; /* Height of the container, full viewport height for toolbar positioning */
+}
+
+/* Styling for the drawing canvas */
+#drawingCanvas {
+    display: block; /* Removes extra space below inline elements */
+    width: 100%; /* Width of the canvas */
+    height: 100%; /* Height of the canvas */
+    background-color: #fff; /* White canvas background */
+    cursor: crosshair; /* Changes mouse cursor to crosshair for drawing */
+    z-index: 1; /* Ensures the canvas stays below the toolbar */
+}
+
+/* Toolbar styling settings, fixed positioning for sliding effect */
+#toolbar {
+    position: absolute; /* Absolute positioning relative to the container */
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 0 8px 8px 0; /* Rounded corners only on the right side (for left-aligned toolbar) */
+    padding: 10px; /* Inner padding */
+    display: flex; /* For aligning content with Flexbox */
+    flex-direction: column; /* Stacks items vertically */
+    gap: 8px; /* Space between items */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow on the right side */
+    cursor: default; /* Default cursor, as dragging is removed */
+    z-index: 10; /* Ensures the toolbar stays above the canvas */
+    transition: left 0.3s ease-out; /* Smooth transition for the sliding effect */
+    max-height: 90vh; /* Limits toolbar height to prevent overflow on very small screens */
+    overflow-y: auto; /* Provides vertical scrollbar if content exceeds max-height */
+    /* 'top' and 'transform' will be set by JavaScript for vertical centering and initial hidden position. */
+}
+
+/* Styling for all tool and action buttons */
+.tool-button, .action-button {
+    display: flex; /* For aligning content with Flexbox */
+    align-items: center; /* Vertically aligns content */
+    justify-content: flex-start; /* Aligns content to the start for a uniform look */
+    gap: 8px; /* Increased space between icon and text */
+    background: none; /* No background by default */
+    border: none; /* No border */
+    padding: 8px; /* Inner padding */
+    border-radius: 4px; /* Rounded corners for buttons */
+    cursor: pointer; /* Changes mouse cursor to pointer on hover */
+    color: #333; /* Dark gray text color */
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out; /* Smooth hover effect */
+    font-size: 0.9rem; /* Slightly smaller font size */
+    width: 100%; /* Ensures buttons take full width for consistent alignment */
+    box-sizing: border-box; /* Includes padding in the element's total width and height */
+}
+
+/* Hover effect for buttons */
+.tool-button:hover, .action-button:hover {
+    background-color: #e0e0e0; /* Light gray background on hover */
+}
+
+/* Active state for tool buttons */
+.tool-button.active {
+    background-color: #007bff; /* Blue background for the active tool */
+    color: #fff; /* White text for the active tool */
+}
+
+/* Styling for SVG icons within buttons */
+.tool-button svg, .action-button svg {
+    width: 20px; /* Icon width */
+    height: 20px; /* Icon height */
+    fill: currentColor; /* Sets SVG fill color to the current text color */
+    flex-shrink: 0; /* Prevents the icon from shrinking */
+}
+
+/* Default fill color for SVG path icons */
+.tool-button svg path,
+.action-button svg path {
+    fill: black; /* Ensures all button icons are black by default */
+    stroke: none; /* Removes stroke for filled icons if present */
+}
+
+/* Overrides for specific icons that use strokes (e.g., Line, Rect, Circle) */
+.tool-button #lineToolButton svg line,
+.tool-button #rectToolButton svg rect,
+.tool-button #circleToolButton svg circle {
+    stroke: black; /* Ensures stroke is black for these icons */
+    fill: none; /* Ensures these icons are not filled */
+}
+
+/* Grouping for tool sections within the toolbar */
+.tool-group {
+    display: flex; /* For aligning content with Flexbox */
+    flex-direction: column; /* Stacks items vertically */
+    gap: 8px; /* Space between items in the group */
+    margin-bottom: 10px; /* Margin below each group */
+    width: 100%; /* Ensures groups take full width */
+}
+
+/* Styling for input labels */
+.input-label {
+    font-size: 0.8rem; /* Smaller font size */
+    color: #555; /* Medium gray text color */
+}
+
+/* Styling for color input field */
+input[type="color"] {
+    border: none; /* No border */
+    width: 30px; /* Width */
+    height: 30px; /* Height */
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Changes mouse cursor to pointer */
+    background-color: #fff; /* White background */
+    padding: 0; /* Removes default padding */
+}
+
+/* Webkit specific styling for the color picker swatch */
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: 1px solid #ccc; /* Border around the color swatch */
+    border-radius: 4px; /* Rounded corners for the swatch */
+}
+
+/* Styling for range input (slider) */
+input[type="range"] {
+    width: 100%; /* Full width within its container */
+    cursor: pointer; /* Changes mouse cursor to pointer */
+}
+
+/* Styling for the pen size value display */
+#penSizeValue {
+    font-size: 0.8rem; /* Font size */
+    color: #555; /* Text color */
+    text-align: right; /* Aligns text to the right */
+}
+
+/* Styling for the custom eraser cursor */
+#eraserCursor {
+    position: absolute; /* Absolute positioning for dynamic movement */
+    border: 2px solid #888; /* Gray border */
+    border-radius: 50%; /* Circular shape */
+    pointer-events: none; /* Does not block mouse events underneath */
+    display: none; /* Hidden by default */
+    z-index: 11; /* Above the canvas but below other interactive elements */
+    background-color: rgba(255, 255, 255, 0.7); /* Semi-transparent white */
+}
+
+/* Layout for the save buttons group */
+.save-group {
+    display: flex; /* For aligning content with Flexbox */
+    gap: 5px; /* Space between buttons */
+    flex-direction: row; /* Arranges buttons horizontally */
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    justify-content: center; /* Centers items if they wrap */
+}
+
+/* Hidden text input field (currently unused) */
+#textInput {
+    border: 1px solid #ccc;
+    padding: 5px;
+    box-sizing: border-box;
+    position: absolute;
+    display: none;
+    z-index: 12;
+}
+
+/* Spinner animation for the 'Generate' button */
+.spinner {
+    animation: rotate 2s linear infinite; /* Continuous rotation animation */
+    z-index: 2; /* Positioning layer */
+    width: 20px; /* Matches icon size */
+    height: 20px; /* Matches icon size */
+    margin-right: 5px; /* Space between spinner and text */
+}
+
+.spinner .path {
+    stroke: #fff; /* White stroke color for the primary button */
+    stroke-linecap: round; /* Rounds the ends of the stroke */
+    animation: dash 1.5s ease-in-out infinite; /* Dash animation */
+}
+
+/* CSS keyframe animations for the spinner */
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg); /* Rotates a full circle */
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1, 150; /* Dash length and gap */
+        stroke-dashoffset: 0; /* Starting offset of the dash */
+    }
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
+}
+
+/* Popup (modal) styling settings */
+.popup {
+    display: none; /* Hidden by default; JavaScript will set to flex when needed */
+    position: fixed; /* Stays fixed on the screen */
+    z-index: 100; /* Appears on top of everything */
+    left: 0; /* Starts from the left edge */
+    top: 0; /* Starts from the top edge */
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Allows scrolling if content is too large */
+    background-color: rgba(0,0,0,0.4); /* Semi-transparent black background */
+    display: flex; /* Uses Flexbox for centering content */
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+}
+
+.popup-content {
+    background-color: #fefefe; /* Background color of the content */
+    margin: auto; /* For browsers that don't support Flexbox centering */
+    padding: 20px; /* Inner padding */
+    border: 1px solid #888; /* Border */
+    border-radius: 8px; /* Rounded corners */
+    width: 80%; /* Responsive width */
+    max-width: 700px; /* Maximum width for larger screens */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* Shadow effect */
+    position: relative; /* For positioning the close button */
+    display: flex; /* For aligning content with Flexbox */
+    flex-direction: column; /* Stacks items vertically */
+    align-items: center; /* Centers items within the popup */
+    gap: 15px; /* Space between elements in the popup */
+}
+
+.popup-content h2 {
+    margin-top: 0; /* Removes top margin */
+    color: #333; /* Text color */
+}
+
+/* Styling for the image inside the popup */
+#popupGeneratedImage {
+    max-width: 100%; /* Ensures it doesn't exceed its container's width */
+    height: auto; /* Preserves aspect ratio */
+    border-radius: 4px; /* Rounded corners */
+    border: 1px solid #eee; /* Light border */
+}
+
+/* Styling for the close button (X) */
+.close-btn {
+    color: #aaa; /* Text color */
+    position: absolute; /* Absolute positioning */
+    top: 10px; /* Distance from the top */
+    right: 15px; /* Distance from the right */
+    font-size: 28px; /* Font size */
+    font-weight: bold; /* Bold font weight */
+    cursor: pointer; /* Changes mouse cursor to pointer on hover */
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black; /* Changes color to black on hover or focus */
+    text-decoration: none; /* Removes text underline */
+    cursor: pointer; /* Changes mouse cursor to pointer on hover */
+}
+
+/* Styling for buttons inside the popup */
+.popup-buttons {
+    display: flex; /* For aligning buttons with Flexbox */
+    gap: 10px; /* Space between buttons */
+    margin-top: 10px; /* Top margin */
+}

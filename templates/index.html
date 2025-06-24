@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Sets the character encoding to UTF-8. -->
+    <meta charset="UTF-8">
+    <!-- Viewport settings, adapts the page to device width and sets the initial zoom level. Critical for mobile responsiveness. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Sets the title of the web page. Appears in the browser tab or window title. -->
+    <title>Draw Real</title>
+    <!-- Links the external stylesheet (style.css). 'url_for' is used by the Flask templating engine to correctly generate the path to static files. -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Main container for the application, holds the canvas and toolbar. -->
+    <div class="container">
+        <!-- The main HTML Canvas element where drawings will be made. -->
+        <canvas id="drawingCanvas"></canvas>
+
+        <!-- Toolbar containing drawing tools and settings.
+             The 'draggable' class has been removed as dragging functionality is now controlled by JavaScript hover effects. -->
+        <div id="toolbar">
+            <!-- Group containing basic drawing tools. -->
+            <div class="tool-group">
+                <!-- Button to select the Pen tool. 'active' class indicates it's selected by default. -->
+                <button id="penToolButton" class="tool-button active" data-tool="pen" title="Pen">
+                    <!-- SVG icon for the Pen tool. -->
+                    <svg viewBox="0 0 24 24" fill="black"><path d="M2 22l4-4 12-12-4-4L2 18v4h4zM15 3l4 4"/></svg>
+                    <span>Pen</span>
+                </button>
+                
+                <!-- Button to select the Eraser tool. -->
+                <button id="eraserToolButton" class="tool-button" data-tool="eraser" title="Eraser">
+                    <!-- SVG icon for the Eraser tool. -->
+                    <svg viewBox="0 0 24 24" fill="black"><path d="M16 3l5 5-13 13H3v-5L16 3z"/></svg>
+                    <span>Eraser</span>
+                </button>
+
+                <!-- Label and slider for adjusting pen/tool size. -->
+                <label for="penSize" class="input-label">Size:</label>
+                <input type="range" id="penSize" min="1" max="25" value="5">
+                <!-- Text display for the selected pen size. -->
+                <span id="penSizeValue">5</span>
+
+                <!-- Label and color picker for adjusting pen color. -->
+                <label for="penColor" class="input-label">Color:</label>
+                <input type="color" id="penColor" value="#333333">
+
+                <!-- Button to select the Line tool. -->
+                <button id="lineToolButton" class="tool-button" data-tool="line" title="Line">
+                    <!-- SVG icon for the Line tool. -->
+                    <svg viewBox="0 0 24 24" stroke="black" fill="none" stroke-width="2"><line x1="4" y1="20" x2="20" y2="4"/></svg>
+                    <span>Line</span>
+                </button>
+
+                <!-- Button to select the Rectangle tool. -->
+                <button id="rectToolButton" class="tool-button" data-tool="rect" title="Rectangle">
+                    <!-- SVG icon for the Rectangle tool. -->
+                    <svg viewBox="0 0 24 24" stroke="black" fill="none" stroke-width="2"><rect x="4" y="4" width="16" height="16"/></svg>
+                    <span>Rectangle</span>
+                </button>
+
+                <!-- Button to select the Circle tool. -->
+                <button id="circleToolButton" class="tool-button" data-tool="circle" title="Circle">
+                    <!-- SVG icon for the Circle tool. -->
+                    <svg viewBox="0 0 24 24" stroke="black" fill="none" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg>
+                    <span>Circle</span>
+                </button>
+
+                <!-- Button to undo the last action. -->
+                <button id="undoActionButton" class="action-button" title="Undo">
+                    <!-- SVG icon for Undo. -->
+                    <svg viewBox="0 0 24 24" fill="black"><path d="M12 5v2H6.41l3.3-3.29L8 3l-6 6 6 6 1.41-1.41L6.41 9H12a7 7 0 1 1-7 7h-2a9 9 0 1 0 9-9z"/></svg>
+                    <span>Undo</span>
+                </button>
+
+                <!-- Button to redo the last undone action. -->
+                <button id="redoActionButton" class="action-button" title="Redo">
+                    <!-- SVG icon for Redo. -->
+                    <svg viewBox="0 0 24 24" fill="black"><path d="M12 5v2h5.59l-3.3-3.29L16 3l6 6-6 6-1.41-1.41L17.59 9H12a7 7 0 1 0 7 7h2a9 9 0 1 1-9-9z"/></svg>
+                    <span>Redo</span>
+                </button>
+
+                <!-- Button to clear the entire canvas. -->
+                <button id="clearCanvasButton" class="action-button" title="Clear">
+                    <!-- SVG icon for Clear. -->
+                    <svg viewBox="0 0 24 24" fill="black"><path d="M3 6h18v2H3V6zm3 3h12v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V9zm5 2v8h2v-8h-2zm4 0v8h2v-8h-2z"/></svg>
+                    <span>Clear</span>
+                </button>
+            </div>
+
+            <!-- Group containing image generation and save tools. -->
+            <div class="tool-group">
+                <!-- Label and text input for the image generation prompt. -->
+                <label for="promptInput" class="input-label">Prompt:</label>
+                <input type="text" id="promptInput" placeholder="Enter what you want to generate...">
+
+                <!-- Button to generate an image based on the drawing and prompt. -->
+                <button id="generateButton" class="action-button primary" title="Generate">
+                    <!-- SVG icon for Generate. -->
+                    <svg viewBox="0 0 24 24" fill="black"><path d="M3 11h18v2H3v-2zm8-8h2v5h-2V3zm0 13h2v5h-2v-5zm7.07-10.07l1.41 1.41-3.54 3.54-1.41-1.41 3.54-3.54zm-12.14 0l3.54 3.54-1.41 1.41-3.54-3.54 1.41-1.41z"/></svg>
+                    <span>Generate</span>
+                </button>
+                
+                <!-- Save buttons group for the main canvas drawing. -->
+                <div class="save-group">
+                    <!-- Button to save the current drawing as a PNG image. -->
+                    <button id="savePNGButton" class="action-button primary" title="Save PNG">
+                        <!-- SVG icon for saving PNG. -->
+                        <svg viewBox="0 0 24 24" fill="black"><path d="M5 20h14v-2H5v2zm7-18v12l4-4h-3V4h-2v6H8l4 4z"/></svg>
+                        <span>PNG</span>
+                    </button>
+
+                    <!-- Button to save the current drawing as a JPEG image. -->
+                    <button id="saveJPEGButton" class="action-button primary" title="Save JPEG">
+                        <!-- SVG icon for saving JPEG. -->
+                        <svg viewBox="0 0 24 24" fill="black"><path d="M5 20h14v-2H5v2zm7-18v12l4-4h-3V4h-2v6H8l4 4z"/></svg>
+                        <span>JPEG</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom cursor element for the eraser tool. Initially hidden. -->
+        <div id="eraserCursor"></div>
+        <!-- Hidden text input field (currently unused but kept for potential future text tool). -->
+        <input type="text" id="textInput" style="position: absolute; display: none; z-index: 12;">
+    </div>
+
+    <!-- Popup/modal window that appears after an image is generated. -->
+    <div id="generatedImagePopup" class="popup">
+        <!-- Close button for the popup. -->
+        <span id="closePopup" class="close-btn">X</span>
+        <!-- Image element where the generated image will be displayed. -->
+        <img id="popupGeneratedImage" src="" alt="Generated Image">
+        <!-- Buttons within the popup for downloading the generated image. -->
+        <div class="popup-buttons">
+            <!-- Button to save the generated image as a PNG. -->
+            <button id="popupSavePNG" class="action-button primary">Save PNG</button>
+            <!-- Button to save the generated image as a JPEG. -->
+            <button id="popupSaveJPEG" class="action-button primary">Save JPEG</button>
+        </div>
+    </div>
+
+    <!-- Links the external JavaScript file (script.js). 'url_for' is used by the Flask templating engine to correctly generate the path to static files. -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
