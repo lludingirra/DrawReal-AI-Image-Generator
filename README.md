@@ -1,6 +1,7 @@
 # DrawReal - Realistic Image Generator
 
 DrawReal is an innovative, AI-powered web application that allows users to instantly transform their drawings into realistic or stylized images. With its user-friendly interface, drawing has never been this fun and transformative!
+(assets/car.png)
 
 ## ✨ Features
 
