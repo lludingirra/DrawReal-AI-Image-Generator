@@ -3,8 +3,6 @@
 DrawReal is an innovative, AI-powered web application that allows users to instantly transform their drawings into realistic or stylized images. With its user-friendly interface, drawing has never been this fun and transformative!
 ## 📸 Application Screenshot
 
-![DrawReal Main Interface](assets/main.png)
-
 ## ✨ Features
 
 This application offers a rich set of features for artists and enthusiasts to interact with digital drawing and AI integration:
@@ -83,6 +81,29 @@ Before you begin, ensure you have the following installed on your system:
 6.  When you click the `Generate` button, your drawing and prompt will be sent to the AI model, and the result will be displayed in a new pop-up window.
 7.  To save the generated image, use the `Save PNG` or `Save JPEG` buttons within the pop-up window.
 8.  You can also save your drawing from the main canvas using the `PNG` or `JPEG` buttons located at the bottom of the toolbar.
+
+## 🖼️ AI Generation Examples
+
+Experience the magic of transformation: See how a simple sketch turns into a photorealistic output!
+
+### 🌸 Example 1: Vase and Flowers
+
+| User Sketch (Input) | AI Generated Image (Output) |
+| :---: | :---: |
+| ![Vase Input](assets/flowerss.png) | ![Vase Output](assets/flowers.png) |
+| *This is the user's input sketch of a vase.* | *This is the model's output based on the user's input.* |
+
+---
+
+### 🚗 Example 2: Vehicle Transformation
+
+| User Sketch (Input) | AI Generated Image (Output) |
+| :---: | :---: |
+| ![Car Input](assets/carr.png) | ![Car Output](assets/car.png) |
+| *This is the user's drawing of a car.* | *This is the model's output based on the user's input.* |
+
+---
+
 
 ## ⚙️ Technical Details
 
